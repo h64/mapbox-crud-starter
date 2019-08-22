@@ -35,7 +35,7 @@ app.post('/search', (req, res) => {
     .send()
     .then(response => {
         // TODO: send ALL of the city listings, instead of just the first one
-        // And update the searchResults.ejs to match
+        // and update the searchResults.ejs to match
         const match = response.body.features[0];
         let lat = match.center[1];
         let long = match.center[0];
@@ -52,9 +52,9 @@ app.post('/search', (req, res) => {
     });
 })
 
+// TODO: Refactor all /favorites routes into a controller file
 // add the selected city to our favorites
 app.post('/favorites', (req, res) => {
-    // res.send(req.body);
     db.place.create(req.body)
     .then(() => {
         res.redirect('/favorites');
@@ -84,7 +84,7 @@ app.delete('/favorites/:id', (req, res) => {
     db.place.destroy({
         where: { id: req.params.id }
     })
-    .then(() => {
+    .then(result => {
         res.redirect('/favorites');
     })
     .catch(err => {
@@ -92,7 +92,6 @@ app.delete('/favorites/:id', (req, res) => {
         res.send('Error in deleting the favorite. Sorry bout that');
     })
 })
-
 
 // Listen!
 app.listen(3001, () => {
