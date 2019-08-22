@@ -1,7 +1,5 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "test",
     "database": "mapbox-example",
     "host": "127.0.0.1",
     "dialect": "postgres"

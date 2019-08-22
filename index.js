@@ -29,7 +29,7 @@ app.post('/search', (req, res) => {
     let city = req.body.city;
     let state = req.body.state;
     let query = `${city}, ${state}`;
-    console.log(city, state, query);
+    // console.log(city, state, query);
 
     geocodingClient.forwardGeocode({ query })
     .send()
