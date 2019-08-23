@@ -14,10 +14,22 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 app.use(ejsLayouts);
 
+// Controllers
+app.use('/favorites', require('./controllers/favorites'))
+app.use('/travelers', require('./controllers/travelers'))
 
 // render the city-search view
 app.get('/', (req, res) => {
-    res.render('citySearch');
+    db.traveler.findAll()
+    .then(travelers => {
+        // do something
+        res.render('citySearch', { travelers });
+    })
+    .catch(err => {
+        console.log(err);
+        res.send("Sry")
+    })
+    
 })
 
 // use forward geocoding to search for cities
@@ -30,6 +42,7 @@ app.post('/search', (req, res) => {
     let state = req.body.state;
     let query = `${city}, ${state}`;
     // console.log(city, state, query);
+    let travelerId = req.body.travelerId;
 
     geocodingClient.forwardGeocode({ query })
     .send()
@@ -47,50 +60,10 @@ app.post('/search', (req, res) => {
             lat,
             long,
             city,
-            state 
+            state,
+            travelerId
         });
     });
-})
-
-// TODO: Refactor all /favorites routes into a controller file
-// add the selected city to our favorites
-app.post('/favorites', (req, res) => {
-    db.place.create(req.body)
-    .then(() => {
-        res.redirect('/favorites');
-    })
-    .catch(err => {
-        if(err) console.log(err);
-        res.send("An error happened while creating a favorite");
-    })
-})
-
-// pull all of the favorite cities, and pass them into the view
-app.get('/favorites', (req, res) => {
-    db.place.findAll()
-    .then(places => {
-        res.render('favorites/index', {
-            places
-        })
-    })
-    .catch(err => {
-        if(err) console.log(err) 
-        res.send("There was an error in accessing the favorites page")
-    })
-})
-
-// Delete the city from the favorites table, and then redirect to the favorites
-app.delete('/favorites/:id', (req, res) => {
-    db.place.destroy({
-        where: { id: req.params.id }
-    })
-    .then(result => {
-        res.redirect('/favorites');
-    })
-    .catch(err => {
-        if(err) console.log(err);
-        res.send('Error in deleting the favorite. Sorry bout that');
-    })
 })
 
 // Listen!

@@ -1,11 +1,48 @@
+
 <h1>All Favorite Locations</h1>
-<% places.forEach(place => { %>
-    <div>
-        <h2><%= place.city %>, <%= place.state %></h2>
-        <p>Latitude: <%= place.lat %></p>
-        <p>Longitude: <%= place.long %></p>
-        <form method="POST" action="/favorites/<%= place.id %>?_method=DELETE">
-            <input type="submit" value="Delete">
-        </form>
+<div style="display: flex">
+    <div style="overflow: auto; height: 80vh">
+        <% places.forEach(place => { %>
+            <div>
+                <h2><%= place.city %>, <%= place.state %></h2>
+                <p>Latitude: <%= place.lat %></p>
+                <p>Longitude: <%= place.long %></p>
+                <form method="POST" action="/favorites/<%= place.id %>?_method=DELETE">
+                    <input type="submit" value="Delete">
+                </form>
+            </div>
+        <% }) %>
     </div>
-<% }) %>
+    <div id="map" style="width: 1000px; height:1000px"></div>
+</div>
+
+<script>
+    mapboxgl.accessToken = '<%= mapboxAccessToken%>'
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v10',
+        center: [-96, 40],
+        zoom: 3
+    });
+
+    map.on('load', function(){
+        map.addLayer({
+        "id": "points",
+        "type": "symbol",
+        "source": {
+            "type": "geojson",
+            "data": {
+            "type": "FeatureCollection",
+            "features": [<%- markers %>]
+            }
+        },
+        "layout": {
+            "icon-image": "{icon}-15",
+            "text-field": "{title}",
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-offset": [0, 0.6],
+            "text-anchor": "top"
+        }
+        })
+    })
+</script>

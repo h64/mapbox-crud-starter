@@ -2,7 +2,7 @@
 <p>Latitude: <%= lat %></p>
 <p>Longitude: <%= long %></p>
 
-<form method="POST" action="/favorites">
+<form method="POST" action="/favorites?travelerId=<%= travelerId %>">
     <input type="hidden" name="city" value="<%= city %>">
     <input type="hidden" name="state" value="<%= state %>">
     <input type="hidden" name="lat" value="<%= lat %>">

@@ -2,9 +2,16 @@
 <form method="POST" action="/search">
     <label for="city-input">City:</label>
     <input id="city-input" type="text" name="city">
-    
+    <br />
     <label for="state-input">State:</label>
     <input id="state-input" type="text" name="state">
-    
+    <br />
+    <select name="travelerId">
+       <% travelers.forEach(traveler => { %>
+            <option value="<%= traveler.id %>">
+                <%= traveler.firstname %>,<%= traveler.lastname %>
+            </option>
+       <% }) %> 
+    </select>
     <input type="submit" value="Find lat/lon">
 </form>
